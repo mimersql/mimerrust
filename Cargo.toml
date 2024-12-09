@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "mimerrust",
+    "mimerrust-sys",
+    "example"
+]
+exclude = [
+    "example"
+]
+
+[patch.crates-io]
+mimerrust-sys = { path = "mimerrust-sys" } # Local path for development

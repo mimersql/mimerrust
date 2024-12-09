@@ -1,0 +1,31 @@
+[package]
+name = "mimerrust-sys"
+version = "1.0.1"
+edition = "2021"
+links = "mimerapi"
+build = "build.rs"
+description = "FFI bindings for the Mimer SQL C API. Used by the 'mimerrust' crate"
+repository = "https://github.com/mimersql/mimerrust"
+homepage = "https://www.mimer.com"
+readme = "README.md"
+license = "MIT"
+keywords = ["mimer", "sql", "database", "driver", "api"]
+categories = ["external-ffi-bindings"]
+
+
+[dependencies]
+
+
+[features]
+run_bindgen = ["dep:bindgen"]
+internal = []
+default = []
+
+[build-dependencies]
+bindgen = { version = "0.70.1", optional = true }
+
+[target.'cfg(windows)'.build-dependencies]
+which = { version = "7.0.0" }
+
+[package.metadata.docs.rs]
+build = false
