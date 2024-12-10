@@ -2,9 +2,9 @@
 The `mimerrust` crate implements an API for interacting with [Mimer SQL](https://www.mimer.com) databases from Rust. 
 
 The Mimer SQL Rust API is built as a wrapper around the Mimer C API. It consists of two crates:
-1. `mimerrust`: Iimplements the Mimer SQL Rust API. It uses the wrappers from `mimerrust-sys` to create a high level, safe interface.
+1. `mimerrust`: Implements the Mimer SQL Rust API. It uses the wrappers from `mimerrust-sys` to create a high level, safe interface.
 2. `mimerrust-sys`: Handles low-level wrapping of the C library into Rust-compatible concepts. 
-It is not intended for direct use, but rather as an intermediary wrapping step. To reduce build time and avoid requiring LLVM and Clang on Windows a pre-generated binding is used by default. To generate and use a new binding, pass the `--features run_bindgen` flag when building.
+It is not intended for direct use, but rather as an intermediary wrapping step. To reduce build time and avoid requiring LLVM and Clang on Windows, a pre-generated binding is used by default. To generate and use a new binding, pass the `--features run_bindgen` flag when building.
 
 
 Example usage:
