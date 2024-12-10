@@ -1,6 +1,6 @@
 [package]
 name = "mimerrust"
-version = "1.0.2"
+version = "1.0.3"
 edition = "2021"
 description = "A Rust API for communicating with the Mimer SQL databases"
 repository = "https://github.com/mimersql/mimerrust"
@@ -11,7 +11,7 @@ keywords = ["mimer", "sql", "database", "driver", "api"]
 categories = ["database"]
 
 [dependencies]
-mimerrust-sys = { version = "1.0.1", features = ["internal"] }
+mimerrust-sys = { version = "1.0.3", features = ["internal"] }
 parking_lot = "0.12.3"
 fallible-streaming-iterator = "0.1.9"
 chrono = "0.4"

@@ -8,4 +8,4 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-mimerrust = "1.0.1"
+mimerrust = "1.0.3"
