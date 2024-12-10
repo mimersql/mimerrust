@@ -11,10 +11,9 @@ To reduce build time and avoid requirements on LLVM and Clang on Windows a pre-g
 
 ## Credits
 The following persons have contributed to the initial version of Mimer SQL Rust API:
-- Edvard Axelman
-- Edvin Bruce
-- Simin Eriksson
-- William Forslund
-- Fredrik Hammarberg
-- Viktor Wallsten
-
+- [Edvard Axelman](https://github.com/popfumo)
+- [Edvin Bruce](https://github.com/Bruce1887)
+- [Simon Eriksson](https://github.com/sier8161)
+- [William Forslund](https://github.com/Forslund16)
+- [Fredrik Hammarberg](https://github.com/efreham1)
+- [Viktor Wallsten](https://github.com/viwa3399)
