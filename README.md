@@ -85,10 +85,10 @@ navigate to example/ and run "cargo run".
 
 ## Credits
 The following persons have contributed to the initial version of Mimer SQL Rust API:
-- Edvard Axelman <edvard.axelman@gmail.com>
-- Edvin Bruce <edvinbruce@hotmail.com>
-- Simin Eriksson <simon.eriksson8161@student.uu.se>
-- William Forslund <williamforslund16@gmail.com>
-- Fredrik Hammarberg <hammarberg83@gmail.com>
-- Viktor Wallsten <viktorwallsten15@gmail.com>
+- Edvard Axelman
+- Edvin Bruce
+- Simin Eriksson
+- William Forslund
+- Fredrik Hammarberg
+- Viktor Wallsten
 
