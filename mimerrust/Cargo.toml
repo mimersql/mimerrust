@@ -1,8 +1,8 @@
 [package]
 name = "mimerrust"
-version = "1.0.4"
+version = "1.0.5"
 edition = "2021"
-description = "A Rust API for communicating with Mimer SQL databases"
+description = "A Rust library for interacting with Mimer SQL, a high-performance relational database management system (RDBMS)"
 repository = "https://github.com/mimersql/mimerrust"
 homepage = "https://www.mimer.com"
 readme = "README.md"
