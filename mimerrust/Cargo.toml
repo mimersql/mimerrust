@@ -2,7 +2,7 @@
 name = "mimerrust"
 version = "1.0.3"
 edition = "2021"
-description = "A Rust API for communicating with the Mimer SQL databases"
+description = "A Rust API for communicating with Mimer SQL databases"
 repository = "https://github.com/mimersql/mimerrust"
 homepage = "https://www.mimer.com"
 readme = "README.md"
