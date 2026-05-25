@@ -511,8 +511,27 @@ impl Statement {
         }
     }
 
-    /// Should this be public? You would need too look in mimerapi.h or similar to make sense of the return codes.
-    fn _get_parameter_type(&self, idx: i16) -> Result<i32, i32> {
+    /// Returns the Mimer SQL type code of a parameter at the given index (1-based).
+    ///
+    /// The returned code corresponds to a `MIMER_*` constant in `mimerrust_sys`.
+    ///
+    /// # Errors
+    /// Returns [Err] when the parameter type could not be determined, e.g. if the index is out of
+    /// range or the connection has been dropped.
+    ///
+    /// # Examples
+    /// ```
+    /// # use mimerrust::*;
+    /// # let db = &std::env::var("MIMER_DATABASE").unwrap();
+    /// # let ident = "RUSTUSER";
+    /// # let pass = "RUSTPASSWORD";
+    /// let mut conn = Connection::open(db, ident, pass).unwrap();
+    /// # conn.execute_statement("drop table test_table").ok();
+    /// # conn.execute_statement("create table test_table (column_1 VARCHAR(30), column_2 INT)").unwrap();
+    /// let stmnt = conn.prepare("INSERT INTO test_table VALUES(:string,:int)", CursorMode::Forward).unwrap();
+    /// let type_code = stmnt.get_parameter_type(1).unwrap();
+    /// ```
+    pub fn get_parameter_type(&self, idx: i16) -> Result<i32, i32> {
         let handle = self.get_statement_handle()?.unwrap(); //Ok unwrap since we know the statement is a statement
         if (*handle).is_null() {
             return Err(-26005); // Handle is NULL
@@ -1472,5 +1491,66 @@ mod statement_tests {
         assert_eq!(row.get::<f32>(2).unwrap().unwrap(), location.0); // check fetched longitude
         assert_eq!(row.get::<f32>(3).unwrap().unwrap(), location.1); // check fetched latitude
         assert_eq!(row.get::<(f32, f32)>(4).unwrap().unwrap(), location); // check fetched location
+    }
+
+    #[test]
+    fn test_get_parameter_type() {
+        use mimerrust_sys as ffi;
+        let mut conn = establish_connection();
+
+        drop_create_table(&conn, BIG_TABLE, BIG_TABLE_COLUMNS);
+        drop_create_table(&conn, BLOB_TABLE_1024, BLOB_TABLE_1024_COLUMNS);
+
+        let stmnt = conn
+            .prepare(
+                &format!("INSERT INTO {BIG_TABLE} {BIG_TABLE_COLUMN_NAMES} VALUES(:STR1,:STR2,:INT,:BIGINT,:BOOL,:DOUBLE,:REAL,:BINARY,:UUID)"),
+                CursorMode::Forward,
+            )
+            .unwrap();
+
+        assert_eq!(stmnt.get_parameter_type(3).unwrap() as u32, ffi::MIMER_NATIVE_INTEGER_NULLABLE);
+        assert_eq!(stmnt.get_parameter_type(5).unwrap() as u32, ffi::MIMER_BOOLEAN);
+        assert_eq!(stmnt.get_parameter_type(8).unwrap() as u32, ffi::MIMER_BINARY);
+
+        let blob_stmnt = conn
+            .prepare(
+                &format!("INSERT INTO {BLOB_TABLE_1024} {BLOB_TABLE_1024_COLUMN_NAMES} VALUES(:BLOB)"),
+                CursorMode::Forward,
+            )
+            .unwrap();
+
+        assert_eq!(blob_stmnt.get_parameter_type(1).unwrap() as u32, ffi::MIMER_NATIVE_BLOB);
+    }
+
+    #[test]
+    fn test_get_parameter_type_invalid_index() {
+        let mut conn = establish_connection();
+        drop_create_table(&conn, EXAMPLE_TABLE, EXAMPLE_TABLE_COLUMNS);
+
+        let stmnt = conn
+            .prepare(
+                &format!("INSERT INTO {EXAMPLE_TABLE} VALUES(:string,:int)"),
+                CursorMode::Forward,
+            )
+            .unwrap();
+
+        assert!(stmnt.get_parameter_type(0).is_err());
+        assert!(stmnt.get_parameter_type(3).is_err());
+    }
+
+    #[test]
+    fn test_get_parameter_type_dropped_connection() {
+        let stmnt;
+        {
+            let mut conn = establish_connection();
+            drop_create_table(&conn, &EXAMPLE_TABLE, &EXAMPLE_TABLE_COLUMNS);
+            stmnt = conn
+                .prepare(
+                    "INSERT INTO test_table VALUES(:string,:int)",
+                    CursorMode::Forward,
+                )
+                .unwrap();
+        }
+        assert_eq!(stmnt.get_parameter_type(1).unwrap_err(), -26003);
     }
 }
