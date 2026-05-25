@@ -188,6 +188,8 @@ impl fmt::Display for MimerError {
     }
 }
 
+impl std::error::Error for MimerError {}
+
 #[cfg(test)]
 mod error_tests {
     use super::*;
