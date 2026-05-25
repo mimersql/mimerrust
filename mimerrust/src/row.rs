@@ -188,7 +188,7 @@ impl Row {
                     }
                     let mut left_to_return = blob_len;
                     val.resize(blob_len, 0);
-                    let blob_idx = 0;
+                    let mut blob_idx = 0;
                     while left_to_return > 0 {
                         let to_recieve = std::cmp::min(left_to_return, LOB_CHUNK_MAXSIZE_SET);
                         let err = ffi::MimerGetBlobData(
@@ -200,6 +200,7 @@ impl Row {
                             return Err(err);
                         }
                         left_to_return -= to_recieve;
+                        blob_idx += to_recieve;
                     }
                     Ok(MimerDatatype::BinaryArray(val))
                 }
@@ -447,6 +448,36 @@ mod row_tests {
         let val: Result<Option<f32>, i32> = row.get(2);
         assert!(val.is_err());
     }
+    #[test]
+    fn row_get_blob_multichunk() {
+        // Exercises the chunked read path: blob must exceed LOB_CHUNK_MAXSIZE_SET (~1 MB).
+        let mut conn = establish_connection();
+
+        drop_create_table(&conn, BLOB_TABLE_GIGA, BLOB_TABLE_GIGA_COLUMNS);
+
+        let option = CursorMode::Forward;
+        let stmnt = conn
+            .prepare(
+                &format!(
+                    "INSERT INTO {BLOB_TABLE_GIGA} {BLOB_TABLE_GIGA_COLUMN_NAMES} VALUES(:BLOB)"
+                ),
+                option,
+            )
+            .unwrap();
+
+        // Three chunks: two full + one partial.
+        let blob: Vec<u8> = (0u8..=255).cycle().take(LOB_CHUNK_MAXSIZE_SET * 2 + 1000).collect();
+        stmnt.execute_bind(&[&blob as &dyn ToSql]).unwrap();
+
+        let stmnt = conn
+            .prepare(&format!("SELECT * FROM {BLOB_TABLE_GIGA}"), option)
+            .unwrap();
+        let mut cursor = stmnt.open_cursor().unwrap();
+        let row = cursor.next_row().unwrap().unwrap();
+        let val: Vec<u8> = row.get(1).unwrap().unwrap();
+        assert_eq!(val, blob);
+    }
+
     #[test]
     fn row_get_blob() {
         let mut conn = establish_connection();
