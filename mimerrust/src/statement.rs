@@ -184,7 +184,6 @@ impl Statement {
 
         for param in params {
             if let Err(err) = self.bind_param_auxillary(*param, handle, i) {
-                dbg!(format!("set params failed at param index: {}", i));
                 return Err(err);
             }
 
