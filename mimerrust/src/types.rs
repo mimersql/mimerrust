@@ -82,7 +82,7 @@ pub enum MimerDatatype<'a> {
 /// [^uuid]: Converts into a 16 byte binary sequence. Mainly intended for *BUILTIN.UUID*.
 ///
 pub trait ToSql {
-    fn to_sql(&self) -> MimerDatatype;
+    fn to_sql(&self) -> MimerDatatype<'_>;
 }
 
 /// Defines translation of datatypes from Mimer SQL to Rust.
@@ -120,7 +120,7 @@ impl<T> ToSql for Option<T>
 where
     T: ToSql,
 {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         match self {
             Some(v) => v.to_sql(),
             None => MimerDatatype::Null,
@@ -129,7 +129,7 @@ where
 }
 
 impl ToSql for i32 {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::Int(*self)
     }
 }
@@ -143,7 +143,7 @@ impl FromSql for i32 {
 }
 
 impl ToSql for i64 {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::BigInt(*self)
     }
 }
@@ -157,12 +157,12 @@ impl FromSql for i64 {
 }
 
 impl ToSql for &str {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::StringRef(self)
     }
 }
 impl ToSql for String {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::StringRef(self)
     }
 }
@@ -176,7 +176,7 @@ impl FromSql for String {
 }
 
 impl ToSql for f32 {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::Real(*self)
     }
 }
@@ -197,7 +197,7 @@ impl FromSql for f32 {
 }
 
 impl ToSql for f64 {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::Double(*self)
     }
 }
@@ -211,7 +211,7 @@ impl FromSql for f64 {
 }
 
 impl ToSql for bool {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::Bool(*self)
     }
 }
@@ -225,12 +225,12 @@ impl FromSql for bool {
 }
 
 impl ToSql for Vec<u8> {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::BinaryArrayRef(self)
     }
 }
 impl<const N: usize> ToSql for [u8; N] {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::BinaryArrayRef(self)
     }
 }
@@ -244,7 +244,7 @@ impl FromSql for Vec<u8> {
 }
 
 impl ToSql for uuid::Uuid {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::BinaryArrayRef(self.as_bytes())
     }
 }
@@ -262,7 +262,7 @@ impl FromSql for uuid::Uuid {
 }
 
 impl ToSql for chrono::NaiveDate {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::String(self.to_string())
     }
 }
@@ -279,7 +279,7 @@ impl FromSql for chrono::NaiveDate {
 }
 
 impl ToSql for chrono::NaiveTime {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::String(self.to_string())
     }
 }
@@ -296,7 +296,7 @@ impl FromSql for chrono::NaiveTime {
 }
 
 impl ToSql for chrono::NaiveDateTime {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         MimerDatatype::String(self.to_string())
     }
 }
@@ -315,7 +315,7 @@ impl FromSql for chrono::NaiveDateTime {
 }
 
 impl ToSql for (f32, f32) {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         let mut bytes: [u8; 8] = [0; 8];
         bytes[..4].copy_from_slice(&self.0.to_le_bytes());
         bytes[4..].copy_from_slice(&self.1.to_le_bytes());
@@ -341,7 +341,7 @@ impl FromSql for (f32, f32) {
 }
 
 impl ToSql for geo::Point<i32> {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         let mut bytes: [u8; 8] = [0; 8];
         bytes[..4].copy_from_slice(&self.x().to_le_bytes());
         bytes[4..].copy_from_slice(&self.y().to_le_bytes());

@@ -31,7 +31,7 @@ struct CustomType {
 }
 
 impl ToSql for CustomType {
-    fn to_sql(&self) -> MimerDatatype {
+    fn to_sql(&self) -> MimerDatatype<'_> {
         let mut bytes: [u8; 8] = [0; 8];
         bytes[..4].copy_from_slice(&self.first_value.to_le_bytes());
         bytes[4..].copy_from_slice(&self.second_value.to_le_bytes());

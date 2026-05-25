@@ -61,7 +61,7 @@ impl Row {
     /// let row = cursor.next_row().unwrap().expect("Nothing was found on this row");
     /// let data_type = row.get_type(1).unwrap();
     /// ```
-    pub fn get_type(&self, idx: i16) -> Result<MimerDatatype, i32> {
+    pub fn get_type(&self, idx: i16) -> Result<MimerDatatype<'_>, i32> {
         let strong_inner_statement = self.inner_statement.upgrade().ok_or(-26004)?;
         let handle = strong_inner_statement.get_statement_handle()?.unwrap(); //Ok unwrap since we know the statement is a statement
         strong_inner_statement.check_connection()?;

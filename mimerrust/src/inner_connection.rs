@@ -134,14 +134,14 @@ impl Drop for InnerConnection {
 }
 
 impl GetHandle for InnerConnection {
-    fn get_handle(&self) -> Result<MimerHandle, i32> {
+    fn get_handle(&self) -> Result<MimerHandle<'_>, i32> {
         Ok(MimerHandle::Session(MutexGuard::map(
             self.session.lock(),
             |inner| &mut *inner,
         )))
     }
 
-    fn get_session_handle(&self) -> Result<Option<MappedMutexGuard<ffi::MimerSession>>, i32> {
+    fn get_session_handle(&self) -> Result<Option<MappedMutexGuard<'_, ffi::MimerSession>>, i32> {
         Ok(Some(MutexGuard::map(self.session.lock(), |inner| {
             &mut *inner
         })))

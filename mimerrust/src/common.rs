@@ -110,17 +110,17 @@ pub mod traits {
     }
 
     pub(crate) trait GetHandle {
-        fn get_handle(&self) -> Result<MimerHandle, i32> {
+        fn get_handle(&self) -> Result<MimerHandle<'_>, i32> {
             Err(-26100)
         }
 
-        fn get_session_handle(&self) -> Result<Option<MappedMutexGuard<ffi::MimerSession>>, i32> {
+        fn get_session_handle(&self) -> Result<Option<MappedMutexGuard<'_, ffi::MimerSession>>, i32> {
             Ok(None)
         }
 
         fn get_statement_handle(
             &self,
-        ) -> Result<Option<MappedMutexGuard<ffi::MimerStatement>>, i32> {
+        ) -> Result<Option<MappedMutexGuard<'_, ffi::MimerStatement>>, i32> {
             Ok(None)
         }
     }

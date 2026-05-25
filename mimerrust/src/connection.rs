@@ -45,10 +45,10 @@ pub struct Connection {
 }
 
 impl GetHandle for Connection {
-    fn get_handle(&self) -> Result<MimerHandle, i32> {
+    fn get_handle(&self) -> Result<MimerHandle<'_>, i32> {
         self.inner_connection.get_handle()
     }
-    fn get_session_handle(&self) -> Result<Option<MappedMutexGuard<ffi::MimerSession>>, i32> {
+    fn get_session_handle(&self) -> Result<Option<MappedMutexGuard<'_, ffi::MimerSession>>, i32> {
         self.inner_connection.get_session_handle()
     }
 }
@@ -183,7 +183,7 @@ impl Connection {
     ///
     /// trans.commit().unwrap();
     /// ```
-    pub fn begin_transaction(&mut self, trans_option: TransactionMode) -> Result<Transaction, i32> {
+    pub fn begin_transaction(&mut self, trans_option: TransactionMode) -> Result<Transaction<'_>, i32> {
         Transaction::new(self, trans_option)
     }
     /// Obtains server statistics information.

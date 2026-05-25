@@ -46,20 +46,20 @@ pub struct Transaction<'a> {
 }
 
 impl GetHandle for Transaction<'_> {
-    fn get_handle(&self) -> Result<MimerHandle, i32> {
+    fn get_handle(&self) -> Result<MimerHandle<'_>, i32> {
         self.connection.get_handle()
     }
 
     fn get_session_handle(
         &self,
-    ) -> Result<Option<parking_lot::MappedMutexGuard<mimerrust_sys::MimerSession>>, i32> {
+    ) -> Result<Option<parking_lot::MappedMutexGuard<'_, mimerrust_sys::MimerSession>>, i32> {
         self.connection.get_session_handle()
     }
 }
 
 impl Transaction<'_> {
     /// Creates a Transaction struct
-    pub(crate) fn new(conn: &mut Connection, toption: TransactionMode) -> Result<Transaction, i32> {
+    pub(crate) fn new(conn: &mut Connection, toption: TransactionMode) -> Result<Transaction<'_>, i32> {
         unsafe {
             let rc = ffi::MimerBeginTransaction(
                 *conn.get_session_handle()?.unwrap(), //Ok unwrap since we know the connection is a connection

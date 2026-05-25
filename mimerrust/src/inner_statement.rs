@@ -145,14 +145,14 @@ impl InnerStatement {
 }
 
 impl GetHandle for InnerStatement {
-    fn get_handle(&self) -> Result<MimerHandle, i32> {
+    fn get_handle(&self) -> Result<MimerHandle<'_>, i32> {
         Ok(MimerHandle::Statement(MutexGuard::map(
             self.statement.lock(),
             |inner| &mut *inner,
         )))
     }
 
-    fn get_statement_handle(&self) -> Result<Option<MappedMutexGuard<ffi::MimerStatement>>, i32> {
+    fn get_statement_handle(&self) -> Result<Option<MappedMutexGuard<'_, ffi::MimerStatement>>, i32> {
         Ok(Some(MutexGuard::map(self.statement.lock(), |inner| {
             &mut *inner
         })))
